@@ -1,11 +1,11 @@
 package Interpreter::Lambda::Calculus::Description::BinOp;
-use Moose;
+use Moose::Role;
 use Moose::Util::TypeConstraints ();
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'MooseX::MetaDescription::Description';
+#extends 'MooseX::MetaDescription::Description';
 
 has 'operator' => (
     is      => 'ro',

@@ -1,13 +1,4 @@
 package Interpreter::Lambda::Calculus::AST::BinOp::Add;
-use Interpreter::Lambda::Calculus::Description::BinOp;
-use metaclass 'MooseX::MetaDescription::Meta::Class' => (
-    metadescription_classname => 'Interpreter::Lambda::Calculus::Description::BinOp',
-    description => {
-        operator        => '+',
-        expression_type => 
-            'Interpreter::Lambda::Calculus::AST::Literal::Int | Interpreter::Lambda::Calculus::AST::Literal::Str',        
-    }
-);
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Int;
@@ -17,6 +8,10 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::BinOp';  
+
+__PACKAGE__->meta->description->{operator}        = '+';
+__PACKAGE__->meta->description->{expression_type} =
+    'Interpreter::Lambda::Calculus::AST::Literal::Int | Interpreter::Lambda::Calculus::AST::Literal::Str';
 
 sub eval {
     my ($self, %env) = @_;

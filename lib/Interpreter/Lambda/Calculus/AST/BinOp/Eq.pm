@@ -1,11 +1,4 @@
 package Interpreter::Lambda::Calculus::AST::BinOp::Eq;
-use Interpreter::Lambda::Calculus::Description::BinOp;
-use metaclass 'MooseX::MetaDescription::Meta::Class' => (
-    metadescription_classname => 'Interpreter::Lambda::Calculus::Description::BinOp',
-    description => {
-        operator => '=='
-    }
-);
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Bool;
@@ -14,6 +7,8 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::BinOp';    
+
+__PACKAGE__->meta->description->{operator} = '==';
 
 sub eval {
     my ($self, %env) = @_;

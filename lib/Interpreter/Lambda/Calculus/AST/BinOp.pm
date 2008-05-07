@@ -1,7 +1,8 @@
 package Interpreter::Lambda::Calculus::AST::BinOp;
-use Interpreter::Lambda::Calculus::Description::BinOp;
 use metaclass 'MooseX::MetaDescription::Meta::Class' => (
-    metadescription_classname => 'Interpreter::Lambda::Calculus::Description::BinOp'
+    description => {
+        traits => [ 'Interpreter::Lambda::Calculus::Description::BinOp' ]
+    }
 );
 use Moose;
 use Moose::Util::TypeConstraints;
