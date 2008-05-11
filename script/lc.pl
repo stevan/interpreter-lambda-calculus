@@ -16,8 +16,5 @@ my $file = Path::Class::File->new(
 (-e $file && -f $file)
     || die "Could not find file ($file)\n";
 
-my $source = $file->slurp;
-$source =~ s/\n/ /g;
-
-print Interpreter::Lambda::Calculus->new->interpret($source)->pprint, "\n";
+print Interpreter::Lambda::Calculus->new->interpret(scalar $file->slurp)->pprint, "\n";
 

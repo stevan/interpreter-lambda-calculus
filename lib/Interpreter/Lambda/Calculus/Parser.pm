@@ -75,7 +75,13 @@ has 'ast' => (is => 'rw', isa => 'Interpreter::Lambda::Calculus::AST::Term');
 sub parse {
     my ($self, $source) = @_;
     
-    $source =~ s/\(\)/unit/g;
+    # NOTE:
+    # these are basically to 
+    # overcome the shortcomings
+    # of Data::SExpressions
+    # - SL
+    $source =~ s/\n/ /g;       # remove newlines
+    $source =~ s/\(\)/unit/g;  # and swap () for unit
     
     my ($root_node) = grep { !/^\s+$/ } $self->read_source($source);
     #warn Dumper $root_node;
