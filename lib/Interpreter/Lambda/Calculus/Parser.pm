@@ -113,6 +113,15 @@ sub create_ast {
         elsif (scalar @nodes == 1) {
             return $self->create_ast($nodes[0]);
         }
+        elsif (scalar @nodes == 7) {
+            if ($nodes[0]->name eq 'let' && $nodes[1]->name eq 'rec') {
+                return $self->create_node('LetRec')->new(
+                    var  => $nodes[2]->name,
+                    val  => $self->create_ast($nodes[4]),
+                    body => $self->create_ast($nodes[6]),
+                );
+            }
+        }
 
         (blessed $nodes[0])
             || confess "first node cannot be a literal";

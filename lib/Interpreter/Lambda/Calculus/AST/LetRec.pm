@@ -1,28 +1,26 @@
-package Interpreter::Lambda::Calculus::AST::App;
+package Interpreter::Lambda::Calculus::AST::LetRec;
 use Moose;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'Interpreter::Lambda::Calculus::AST::Term';    
-
-has 'f'   => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');    
-has 'arg' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');
+extends 'Interpreter::Lambda::Calculus::AST::Let';
 
 sub eval {
     my ($self, %env) = @_;
-    my $func = $self->f->eval(%env); 
+    my $func = $self->val->eval(%env);
     ($func->isa('Interpreter::Lambda::Calculus::AST::Closure'))
-        || confess "f must evaluate to a closure";
-    my %_env = %{ $func->env };    
-    $_env{ $func->param->name } = $self->arg->eval(%env)
-        unless $func->param->isa('Interpreter::Lambda::Calculus::AST::Unit');
-    $func->eval(%_env);
+        || confess "f must evaluate to a closure";    
+    # add a binding for the function 
+    # itself within the closure
+    $func->env->{ $self->var } = $func; 
+    $env{ $self->var } = $func;        
+    $self->body->eval(%env);
 }
 
 sub pprint {
     my $self = shift;
-    '(' . $self->f->pprint . ' ' . $self->arg->pprint . ')'
+    '(let rec ' . $self->var . ' = ' . $self->val->pprint . ' in ' . $self->body->pprint . ')'
 }
 
 no Moose; 1;
@@ -33,11 +31,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::App - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::LetRec - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::App;
+  use Interpreter::Lambda::Calculus::AST::LetRec;
 
 =head1 DESCRIPTION
 

@@ -19,11 +19,11 @@ subtype 'Interpreter::Lambda::Calculus::AST::Lambda::ParamType'
 # have to add more tests to 
 # figure it out.
 # - SL 
-# MooseX::Storage::Engine->add_custom_type_handler(
-#     'Interpreter::Lambda::Calculus::AST::Lambda::ParamType' => (
-#         %{ MooseX::Storage::Engine->find_type_handler(find_type_constraint('Object')) }
-#     )
-# );
+MooseX::Storage::Engine->add_custom_type_handler(
+    'Interpreter::Lambda::Calculus::AST::Lambda::ParamType' => (
+        %{ MooseX::Storage::Engine->find_type_handler(find_type_constraint('Object')) }
+    )
+);
 
 no Moose::Util::TypeConstraints; 1;
 

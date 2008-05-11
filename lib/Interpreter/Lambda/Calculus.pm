@@ -13,11 +13,13 @@ has 'parser' => (
     default => sub { 
         Interpreter::Lambda::Calculus::Parser->new;
     },
+    handles => ['parse'],
 );
+
 
 sub interpret {
     my ($self, $source) = @_;
-    $self->parser->parse($source)->eval;
+    $self->parse($source)->eval;
 }
 
 no Moose; 1;

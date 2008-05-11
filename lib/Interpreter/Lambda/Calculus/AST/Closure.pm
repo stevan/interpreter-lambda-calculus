@@ -20,7 +20,15 @@ has 'body'  => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');
 
 sub eval {
     my ($self, %env) = @_;
-    $self->body->eval( %env, %{$self->env} );
+    
+    #use Data::Dumper;
+    #warn Dumper { 
+    #    env      => \%env, 
+    #    self_env => $self->env,
+    #    body     => $self->body,
+    #};
+    
+    $self->body->eval(%env);
 }
 
 sub pprint {
