@@ -29,9 +29,17 @@ has 'binop_map' => (
             # bool binops
             'eq' => 'BinOp::Eq',
             'ne' => 'BinOp::Ne',
+            'gt' => 'BinOp::Gt',
+            'lt' => 'BinOp::Lt',            
+            'ge' => 'BinOp::GtEq',
+            'le' => 'BinOp::LtEq',            
             # as operators
             '==' => 'BinOp::Eq',
             '!=' => 'BinOp::Ne',
+            '>' => 'BinOp::Gt',
+            '<' => 'BinOp::Lt',            
+            '>=' => 'BinOp::GtEq',
+            '<=' => 'BinOp::LtEq',            
         }
     },
 );
