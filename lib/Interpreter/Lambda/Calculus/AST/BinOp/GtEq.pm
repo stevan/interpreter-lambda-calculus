@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::BinOp:::GtEq;
+package Interpreter::Lambda::Calculus::AST::BinOp::GtEq;
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Bool;
@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::BinOp:::GtEq - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::BinOp::GtEq - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 

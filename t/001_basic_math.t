@@ -43,3 +43,6 @@ foreach my $source ('(mod 10 3)'){
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 1, '... got the right value');
 }
+
+
+
