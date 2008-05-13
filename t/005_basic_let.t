@@ -32,3 +32,19 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 20, '... got the right value');
 }
+
+{
+    my @errors = (
+        '(let x = 10 in y)',
+        '(let x = (lamda () (x 10)) in (x 10))'        
+    );
+
+    foreach my $err (@errors) {
+        dies_ok {
+            $i->interpret($err)   
+        } "... $err failed correctly";
+    }
+}
+
+
+

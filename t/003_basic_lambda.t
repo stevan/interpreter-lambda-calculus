@@ -16,6 +16,18 @@ my $i = Interpreter::Lambda::Calculus->new;
 isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 {
+    my $l = $i->parse('(lambda () ())');
+    isa_ok($l, 'Interpreter::Lambda::Calculus::AST::Lambda');
+    isa_ok($l->param, 'Interpreter::Lambda::Calculus::AST::Unit');    
+
+    my $r = Interpreter::Lambda::Calculus::AST::App->new(
+        f   => $l, 
+        arg => Interpreter::Lambda::Calculus::AST::Unit->new
+    )->eval;
+    isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Unit');
+}
+
+{
     my $l = $i->parse('(lambda x (+ x x))');
     isa_ok($l, 'Interpreter::Lambda::Calculus::AST::Lambda');
     is($l->param->name, 'x', '... our lambdas parameter is x');

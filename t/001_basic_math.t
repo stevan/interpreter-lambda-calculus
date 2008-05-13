@@ -44,5 +44,36 @@ foreach my $source ('(mod 10 3)'){
     is($r->val, 1, '... got the right value');
 }
 
+{
+    my @errors = (
+        '(+ 1 (lambda () ()))', 
+        '(add 1 (lambda () ()))',
+        '(+ (lambda () ()) 1)', 
+        '(add (lambda () ()) 1)',
+                
+        '(- 1 "two")', 
+        '(sub 1 "two")',      
+        '(- "two" 1)', 
+        '(sub "two" 1)',
+                   
+        '(* 1 "two")',
+        '(mul 1 "two")',        
+        '(* "two" 1)',
+        '(mul "two" 1)',        
+        
+        '(\ 1 "two")',        
+        '(div 1 "two")',                
+        '(\ "two" 1)',        
+        '(div "two" 1)',        
+        
+        '(mod 1 "two")',        
+        '(mod "two" 1)',                
+    );
 
+    foreach my $err (@errors) {
+        dies_ok {
+            $i->interpret($err)   
+        } "... $err failed correctly";
+    }
+}
 

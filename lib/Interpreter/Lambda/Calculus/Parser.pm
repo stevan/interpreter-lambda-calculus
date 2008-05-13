@@ -44,6 +44,121 @@ has 'binop_map' => (
     },
 );
 
+has 'compound_node_definitions' => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,   
+    default => sub {
+        my $self = shift;
+        return +[
+            [
+                [ undef ],
+                sub {
+                    my $nodes = shift;
+                    $self->create_ast($nodes->[0])                
+                }
+            ],
+            [
+                [ undef, undef ],
+                sub {
+                    my $nodes = shift;
+                    return $self->create_node('App')->new(
+                        f   => $self->create_ast($nodes->[0]),
+                        arg => $self->create_ast($nodes->[1]),
+                    );                
+                }
+            ],
+            [
+                [ 'if', undef, 'then', undef, 'else', undef ],
+                sub {
+                    my $nodes = shift;
+                    return $self->create_node('IfElse')->new(
+                        cond => $self->create_ast($nodes->[1]),
+                        e1   => $self->create_ast($nodes->[3]),
+                        e2   => $self->create_ast($nodes->[5]),
+                    );                
+                }
+            ],
+            [
+                [ 'let', undef, '=', undef, 'in', undef ],
+                sub {
+                    my $nodes = shift;
+                    return $self->create_node('Let')->new(
+                        var  => $nodes->[1]->name,
+                        val  => $self->create_ast($nodes->[3]),
+                        body => $self->create_ast($nodes->[5]),
+                    );
+                }
+            ],        
+            [
+                [ 'let', 'rec', undef, '=', undef, 'in', undef ],
+                sub {
+                    my $nodes = shift;
+                    return $self->create_node('LetRec')->new(
+                        var  => $nodes->[2]->name,
+                        val  => $self->create_ast($nodes->[4]),
+                        body => $self->create_ast($nodes->[6]),
+                    );
+                }
+            ],  
+            [
+                [ 'lambda', undef, undef ],
+                sub {
+                    my $nodes = shift;
+                    return $self->create_node('Lambda')->new(
+                        param => $self->create_ast($nodes->[1]),
+                        body  => $self->create_ast($nodes->[2]),
+                    );                    
+                }
+            ],
+            map {
+                my $op = $_;
+                [
+                    [ $op, undef, undef ],
+                    sub {
+                        my $nodes = shift;
+                        return $self->create_node($self->binop_map->{ $op })->new(
+                            left  => $self->create_ast($nodes->[1]),
+                            right => $self->create_ast($nodes->[2]),
+                        );
+                    }
+                ]
+            } keys %{ $self->binop_map }
+        ];        
+    },
+);
+
+has 'singular_node_definitions' => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,   
+    default => sub {
+        my $self = shift;
+        return +[
+            # Literals
+            [ 
+                sub { not blessed $_[0]                  },
+                sub { $self->create_literal_node($_[0]) },            
+            ],
+            # Literal::Bool
+            [ 
+                sub { $self->create_node('Literal::Bool')->is_bool_type($_[0]->name) },
+                sub { $self->create_node('Literal::Bool')->new(val => $_[0]->name)   },            
+            ],
+            # Unit
+            [ 
+                sub { $_[0]->name eq 'unit'             },
+                sub { $self->create_node('Unit')->new() },            
+            ],
+            # Var
+            [ 
+                sub { 1 },
+                sub { $self->create_node('Var')->new(name => $_[0]->name) },            
+            ],        
+        ]
+    },
+);
+
 has 'lexer' => (
     is      => 'ro',
     isa     => 'Data::SExpression',
@@ -90,93 +205,51 @@ sub parse {
 
 sub create_ast {
     my ($self, $node) = @_;
+    return $self->create_compound_node($node) 
+        if ref $node eq 'ARRAY';
+    return $self->create_singular_node($node);
+}
 
-    if (ref $node eq 'ARRAY') {
-        my @nodes = @$node;
+sub create_compound_node {
+    my ($self, $nodes) = @_;
+    
+    OUTER: foreach my $node_definition (@{ $self->compound_node_definitions }) {
+        my ($node_spec, $node_builder) = @$node_definition;
+        next unless @$nodes == @$node_spec;
+        foreach my $i (0 .. $#{$node_spec}) {
+            next unless defined $node_spec->[$i];
+            if ($node_spec->[$i] eq $nodes->[$i]) {
+                next;
+            }   
+            else {
+                next OUTER;
+            }             
+        }
+        return $node_definition->[1]->($nodes);
+    }
+    
+    confess "UNIMPLEMENTED node " . $nodes->[0]->name;    
+}
 
-        if (scalar @nodes == 2) {
-            return $self->create_node('App')->new(
-                f   => $self->create_ast($nodes[0]),
-                arg => $self->create_ast($nodes[1]),
-            );                
-        }
-        elsif (scalar @nodes == 6) {
-            if ($nodes[0]->name eq 'if') {
-                return $self->create_node('IfElse')->new(
-                    cond => $self->create_ast($nodes[1]),
-                    e1   => $self->create_ast($nodes[3]),
-                    e2   => $self->create_ast($nodes[5]),
-                );
-            }
-            elsif ($nodes[0]->name eq 'let') {
-                return $self->create_node('Let')->new(
-                    var  => $nodes[1]->name,
-                    val  => $self->create_ast($nodes[3]),
-                    body => $self->create_ast($nodes[5]),
-                );
-            }
-        }
-        elsif (scalar @nodes == 1) {
-            return $self->create_ast($nodes[0]);
-        }
-        elsif (scalar @nodes == 7) {
-            if ($nodes[0]->name eq 'let' && $nodes[1]->name eq 'rec') {
-                return $self->create_node('LetRec')->new(
-                    var  => $nodes[2]->name,
-                    val  => $self->create_ast($nodes[4]),
-                    body => $self->create_ast($nodes[6]),
-                );
-            }
-        }
+sub create_singular_node {
+    my ($self, $node) = @_;
+    foreach my $test (@{ $self->singular_node_definitions }) {
+        return $test->[1]->($node) 
+            if $test->[0]->($node);
+    }
+}
 
-        (blessed $nodes[0])
-            || confess "first node cannot be a literal";
-
-        my %binops = %{ $self->binop_map };
-
-        if (exists $binops{ $nodes[0]->name }) {
-            return $self->create_node($binops{ $nodes[0]->name })->new(
-                left  => $self->create_ast($nodes[1]),
-                right => $self->create_ast($nodes[2]),
-            );
-        }
-        elsif ($nodes[0]->name eq 'lambda') {
-            return $self->create_node('Lambda')->new(
-                param => $self->create_ast($nodes[1]),
-                body  => $self->create_ast($nodes[2]),
-            );
-        }
-        else {
-            confess "UNIMPLEMENTED node " . $nodes[0]->name;
-        }
+sub create_literal_node {
+    my ($self, $node) = @_;
+    if (looks_like_number($node)) {
+        return $self->create_node('Literal::Int')->new(val => $node);
+    }
+    elsif ($self->create_node('Literal::Bool')->is_bool_type($node)) {
+        return $self->create_node('Literal::Bool')->new(val => $node);
     }
     else {
-        if (blessed $node) {
-            if ($self->create_node('Literal::Bool')->is_bool_type($node->name)) {                
-                return $self->create_node('Literal::Bool')->new(val => $node->name);
-            }
-            else {
-                if ($node->name eq 'unit') {
-                    return $self->create_node('Unit')->new();
-                }
-                else {                    
-                    return $self->create_node('Var')->new(name => $node->name);
-                }
-            }
-
-        }
-        else {
-            if (looks_like_number($node)) {
-                return $self->create_node('Literal::Int')->new(val => $node);
-            }
-            elsif ($self->create_node('Literal::Bool')->is_bool_type($node)) {
-                return $self->create_node('Literal::Bool')->new(val => $node);
-            }
-            else {
-                return $self->create_node('Literal::Str')->new(val => $node);
-            }
-        }
-    }
+        return $self->create_node('Literal::Str')->new(val => $node);
+    }    
 }
 
 no Moose; 1;

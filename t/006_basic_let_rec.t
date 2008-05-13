@@ -46,3 +46,16 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 55, '... got the right value');
 }
+
+{
+    my @errors = (
+        '(let rec x = 10 in x)'
+    );
+
+    foreach my $err (@errors) {
+        dies_ok {
+            $i->interpret($err)   
+        } "... $err failed correctly";
+    }
+}
+
