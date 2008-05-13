@@ -13,6 +13,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 has 'binop_map' => (
     is      => 'ro',
     isa     => 'HashRef',
+    lazy    => 1,
     default => sub {
         return +{
             # int binops
@@ -54,60 +55,60 @@ has 'compound_node_definitions' => (
             [
                 [ undef ],
                 sub {
-                    my $nodes = shift;
-                    $self->create_ast($nodes->[0])                
+                    my ($parser, $nodes) = @_;
+                    $parser->create_ast($nodes->[0])                
                 }
             ],
             [
                 [ undef, undef ],
                 sub {
-                    my $nodes = shift;
-                    return $self->create_node('App')->new(
-                        f   => $self->create_ast($nodes->[0]),
-                        arg => $self->create_ast($nodes->[1]),
+                    my ($parser, $nodes) = @_;
+                    return $parser->create_node('App')->new(
+                        f   => $parser->create_ast($nodes->[0]),
+                        arg => $parser->create_ast($nodes->[1]),
                     );                
                 }
             ],
             [
                 [ 'if', undef, 'then', undef, 'else', undef ],
                 sub {
-                    my $nodes = shift;
-                    return $self->create_node('IfElse')->new(
-                        cond => $self->create_ast($nodes->[1]),
-                        e1   => $self->create_ast($nodes->[3]),
-                        e2   => $self->create_ast($nodes->[5]),
+                    my ($parser, $nodes) = @_;
+                    return $parser->create_node('IfElse')->new(
+                        cond => $parser->create_ast($nodes->[1]),
+                        e1   => $parser->create_ast($nodes->[3]),
+                        e2   => $parser->create_ast($nodes->[5]),
                     );                
                 }
             ],
             [
                 [ 'let', undef, '=', undef, 'in', undef ],
                 sub {
-                    my $nodes = shift;
-                    return $self->create_node('Let')->new(
+                    my ($parser, $nodes) = @_;
+                    return $parser->create_node('Let')->new(
                         var  => $nodes->[1]->name,
-                        val  => $self->create_ast($nodes->[3]),
-                        body => $self->create_ast($nodes->[5]),
+                        val  => $parser->create_ast($nodes->[3]),
+                        body => $parser->create_ast($nodes->[5]),
                     );
                 }
             ],        
             [
                 [ 'let', 'rec', undef, '=', undef, 'in', undef ],
                 sub {
-                    my $nodes = shift;
-                    return $self->create_node('LetRec')->new(
+                    my ($parser, $nodes) = @_;
+                    return $parser->create_node('LetRec')->new(
                         var  => $nodes->[2]->name,
-                        val  => $self->create_ast($nodes->[4]),
-                        body => $self->create_ast($nodes->[6]),
+                        val  => $parser->create_ast($nodes->[4]),
+                        body => $parser->create_ast($nodes->[6]),
                     );
                 }
             ],  
             [
                 [ 'lambda', undef, undef ],
                 sub {
-                    my $nodes = shift;
-                    return $self->create_node('Lambda')->new(
-                        param => $self->create_ast($nodes->[1]),
-                        body  => $self->create_ast($nodes->[2]),
+                    my ($parser, $nodes) = @_;
+                    return $parser->create_node('Lambda')->new(
+                        param => $parser->create_ast($nodes->[1]),
+                        body  => $parser->create_ast($nodes->[2]),
                     );                    
                 }
             ],
@@ -116,10 +117,10 @@ has 'compound_node_definitions' => (
                 [
                     [ $op, undef, undef ],
                     sub {
-                        my $nodes = shift;
-                        return $self->create_node($self->binop_map->{ $op })->new(
-                            left  => $self->create_ast($nodes->[1]),
-                            right => $self->create_ast($nodes->[2]),
+                        my ($parser, $nodes) = @_;
+                        return $parser->create_node($self->binop_map->{ $op })->new(
+                            left  => $parser->create_ast($nodes->[1]),
+                            right => $parser->create_ast($nodes->[2]),
                         );
                     }
                 ]
@@ -135,25 +136,35 @@ has 'singular_node_definitions' => (
     default => sub {
         my $self = shift;
         return +[
-            # Literals
+            # Literal::Int
             [ 
-                sub { not blessed $_[0]                  },
-                sub { $self->create_literal_node($_[0]) },            
+                sub { not( blessed $_[1] ) && looks_like_number($_[1])      },
+                sub { $_[0]->create_node('Literal::Int')->new(val => $_[1]) },            
+            ],                                    
+            # Literal::Bool (sometimes it is not blessed)
+            [
+                sub { not( blessed $_[1] ) && $_[0]->create_node('Literal::Bool')->is_bool_type($_[1]) },
+                sub { $_[0]->create_node('Literal::Bool')->new(val => $_[1])                           },            
             ],
-            # Literal::Bool
+            # Literal::Str
             [ 
-                sub { $self->create_node('Literal::Bool')->is_bool_type($_[0]->name) },
-                sub { $self->create_node('Literal::Bool')->new(val => $_[0]->name)   },            
+                sub { not( blessed $_[1] )                                  },
+                sub { $_[0]->create_node('Literal::Str')->new(val => $_[1]) },            
+            ],
+            # Literal::Bool (sometimes it is blessed)                                    
+            [ 
+                sub { $_[0]->create_node('Literal::Bool')->is_bool_type($_[1]->name) },
+                sub { $_[0]->create_node('Literal::Bool')->new(val => $_[1]->name)   },            
             ],
             # Unit
             [ 
-                sub { $_[0]->name eq 'unit'             },
-                sub { $self->create_node('Unit')->new() },            
+                sub { $_[1]->name eq 'unit'             },
+                sub { $_[0]->create_node('Unit')->new() },            
             ],
             # Var
             [ 
                 sub { 1 },
-                sub { $self->create_node('Var')->new(name => $_[0]->name) },            
+                sub { $_[0]->create_node('Var')->new(name => $_[1]->name) },            
             ],        
         ]
     },
@@ -225,7 +236,7 @@ sub create_compound_node {
                 next OUTER;
             }             
         }
-        return $node_definition->[1]->($nodes);
+        return $node_definition->[1]->($self, $nodes);
     }
     
     confess "UNIMPLEMENTED node " . $nodes->[0]->name;    
@@ -234,22 +245,9 @@ sub create_compound_node {
 sub create_singular_node {
     my ($self, $node) = @_;
     foreach my $test (@{ $self->singular_node_definitions }) {
-        return $test->[1]->($node) 
-            if $test->[0]->($node);
+        return $test->[1]->($self, $node) 
+            if $test->[0]->($self, $node);
     }
-}
-
-sub create_literal_node {
-    my ($self, $node) = @_;
-    if (looks_like_number($node)) {
-        return $self->create_node('Literal::Int')->new(val => $node);
-    }
-    elsif ($self->create_node('Literal::Bool')->is_bool_type($node)) {
-        return $self->create_node('Literal::Bool')->new(val => $node);
-    }
-    else {
-        return $self->create_node('Literal::Str')->new(val => $node);
-    }    
 }
 
 no Moose; 1;
