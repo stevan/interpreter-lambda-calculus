@@ -1,25 +1,29 @@
-package Interpreter::Lambda::Calculus::AST::Var;
+package Interpreter::Lambda::Calculus::AST::Seq;
 use Moose;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'Interpreter::Lambda::Calculus::AST::Term';    
+extends 'Interpreter::Lambda::Calculus::AST::Term';
 
-has 'name' => (is => 'ro', isa => 'Str');    
+has 'nodes' => (
+    is      => 'ro',
+    isa     => 'ArrayRef[Interpreter::Lambda::Calculus::AST::Term]',   
+    default => sub { [] },
+);
 
 sub eval {
     my ($self, %env) = @_;
-    my $name = $self->name;
-    my $val  = $env{ $name } || $env{'__TOP_LEVEL_ENV__'}->{ $name };
-    (defined $val)
-        || confess "UNBOUND VARIABLE " . $self->name;
-    return $val;
+    my $rv;
+    foreach my $node (@{ $self->nodes }) {
+        $rv = $node->eval(%env);
+    }
+    return $rv;
 }
 
 sub pprint {
     my $self = shift;
-    '(' . $self->name . ')'
+    join "\n" => map { $_->pprint } @{ $self->nodes };
 }
 
 no Moose; 1;
@@ -30,11 +34,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Var - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::Seq - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::Var;
+  use Interpreter::Lambda::Calculus::AST::Seq;
 
 =head1 DESCRIPTION
 

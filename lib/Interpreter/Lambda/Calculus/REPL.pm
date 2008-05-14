@@ -48,11 +48,10 @@ has 'banner' => (
 
 sub run {
     my $self = shift;
-    print $self->banner;
-    local $\="\n";        
+    print $self->banner;        
     while (1) {
         my $line = $self->readline($self->prompt);
-        eval { print $self->interpreter->interpret($line)->pprint };
+        eval { print $self->interpreter->interpret($line)->pprint, "\n" };
         if ($@) {
             print "Error has occurred:\n    code: '$line'\n    error: $@";
         }

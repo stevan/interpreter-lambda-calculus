@@ -13,7 +13,7 @@ sub eval {
     my ($self, %env) = @_;
     my $func = $self->f->eval(%env); 
     ($func->isa('Interpreter::Lambda::Calculus::AST::Closure'))
-        || confess "f must evaluate to a closure";
+        || confess "f must evaluate to a closure, got $func";
     my %_env = %{ $func->env };    
     $_env{ $func->param->name } = $self->arg->eval(%env)
         unless $func->param->isa('Interpreter::Lambda::Calculus::AST::Unit');

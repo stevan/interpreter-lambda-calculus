@@ -16,10 +16,17 @@ has 'parser' => (
     handles => ['parse'],
 );
 
+has 'top_level_environment' => (
+    is      => 'ro',
+    isa     => 'HashRef',   
+    default => sub { +{} },
+);
 
 sub interpret {
     my ($self, $source) = @_;
-    $self->parse($source)->eval;
+    $self->parse($source)->eval(
+        '__TOP_LEVEL_ENV__' => $self->top_level_environment
+    );
 }
 
 no Moose; 1;

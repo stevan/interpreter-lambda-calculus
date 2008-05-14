@@ -77,9 +77,29 @@ sub parse {
     $source =~ s/\n/ /g;       # remove newlines
     $source =~ s/\(\)/unit/g;  # and swap () for unit
 
-    my ($root_node) = grep { !/^\s+$/ } $self->read_source($source);
-    #warn Dumper $root_node;
-    $self->ast($self->create_ast($root_node));
+    my ($root_node) = grep { $_ ne '' } $self->read_source("($source)");    
+    #warn Dumper $root_node;    
+    
+    if (scalar @$root_node == 1) {
+        $self->ast(
+            $self->create_ast(
+                $root_node->[0]
+            )
+        );
+    }
+    else {        
+        $self->ast(
+            $self->create_node('Seq')->new(
+                nodes => [
+                    (map { $self->create_ast($_) } @$root_node)
+                ]
+            )
+        );
+    }
+    
+    #print $self->ast->dump;
+    
+    $self->ast;
 }
 
 sub create_ast {

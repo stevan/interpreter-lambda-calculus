@@ -1,25 +1,22 @@
-package Interpreter::Lambda::Calculus::AST::Var;
+package Interpreter::Lambda::Calculus::AST::Define;
 use Moose;
 
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'Interpreter::Lambda::Calculus::AST::Term';    
+extends 'Interpreter::Lambda::Calculus::AST::Term';
 
-has 'name' => (is => 'ro', isa => 'Str');    
+has 'var'    => (is => 'ro', isa => 'Str');
+has 'lambda' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Lambda');
 
 sub eval {
     my ($self, %env) = @_;
-    my $name = $self->name;
-    my $val  = $env{ $name } || $env{'__TOP_LEVEL_ENV__'}->{ $name };
-    (defined $val)
-        || confess "UNBOUND VARIABLE " . $self->name;
-    return $val;
+    $env{'__TOP_LEVEL_ENV__'}->{ $self->var } = $self->lambda->eval(%env);
 }
 
 sub pprint {
     my $self = shift;
-    '(' . $self->name . ')'
+    '(let ' . $self->var . ' ' . $self->lambda->param->pprint . ' = ' . $self->lambda->body->pprint . ')'
 }
 
 no Moose; 1;
@@ -30,11 +27,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Var - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::Define - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::Var;
+  use Interpreter::Lambda::Calculus::AST::Let;
 
 =head1 DESCRIPTION
 

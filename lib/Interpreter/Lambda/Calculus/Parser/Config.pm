@@ -61,7 +61,7 @@ our @COMPOUND_NODE_DEFINITIONS = (
         ),
         sub {
             my ($parser, $nodes) = @_;
-            $parser->create_ast($nodes->[0])
+            $parser->create_ast($nodes->[0]);
         }
     ],
     [
@@ -102,6 +102,21 @@ our @COMPOUND_NODE_DEFINITIONS = (
             );
         }
     ],
+    [
+        create_compound_node_spec_checker(
+            [ 'define', undef, undef, '=', undef ]
+        ),
+        sub {
+            my ($parser, $nodes) = @_;
+            return $parser->create_node('Define')->new(
+                var    => $nodes->[1]->name,
+                lambda => $parser->create_node('Lambda')->new(
+                    param => $parser->create_ast($nodes->[2]),
+                    body  => $parser->create_ast($nodes->[4]),
+                )
+            );
+        }
+    ],    
     [
         create_compound_node_spec_checker(
             [ 'let', 'rec', undef, '=', undef, 'in', undef ]
