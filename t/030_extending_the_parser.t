@@ -21,15 +21,18 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 push @{ $i->parser->compound_node_definitions } => [
     Interpreter::Lambda::Calculus::Parser::Config::create_compound_node_spec_checker(
-        [ 'fun', undef, undef, '=', undef ]
+        [ 'fun', undef, undef, '=', undef, undef ]
     ),
     sub {
         # just stub it for now
+        my (undef, $nodes) = @_;
+        use Data::Dumper;
+        warn Dumper $nodes;
         return Function->new;
     }
 ];
 
-my $func = $i->parse('(fun square x = (* x x))');
+my $func = $i->parse('(fun square x = (* x x)) (square 10)');
 isa_ok($func, 'Function');
 
 
