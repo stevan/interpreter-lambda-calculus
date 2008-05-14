@@ -36,7 +36,11 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
         # Lambda
         '(lambda () ())' => '(lambda () ())',
         # If Else
-        '(if (true) then 10 else 20)' => '(if (true) then (10) else (20))',        
+        '(if (true) then 10 else 20)' => '(if (true) then (10) else (20))',
+        # Define
+        '(define foo x = (+ x x))' => '(define foo (x) = (+ (x) (x)))',
+        # DefineConst
+        '(define foo = 10)' => '(define foo = (10))',
     );
 
     foreach my $s (keys %source) {
@@ -52,7 +56,13 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
         $i->interpret('((lambda (f) (lambda (x) (f x))) (lambda (x) (+ x x)))')->pprint,
         '<closure $ENV (lambda (x) ((f) (x)))>',        
         "... closure pretty printed correctly"
-    );            
+    ); 
+    
+    is(
+        $i->parse('(define foo = "bar") (foo)')->pprint,
+        ('(define foo = ("bar"))' . "\n" . '(foo)'),        
+        "... sequence pretty printed correctly"
+    );               
 }
 
 

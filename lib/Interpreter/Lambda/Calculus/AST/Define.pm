@@ -16,7 +16,7 @@ sub eval {
 
 sub pprint {
     my $self = shift;
-    '(let ' . $self->var . ' ' . $self->lambda->param->pprint . ' = ' . $self->lambda->body->pprint . ')'
+    '(define ' . $self->var . ' ' . $self->lambda->param->pprint . ' = ' . $self->lambda->body->pprint . ')'
 }
 
 no Moose; 1;
