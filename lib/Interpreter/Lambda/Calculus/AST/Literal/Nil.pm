@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::Literal::Int;
+package Interpreter::Lambda::Calculus::AST::Literal::Nil;
 use Moose;
 
 our $VERSION   = '0.01';
@@ -6,11 +6,17 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::Literal';
 
-has '+val' => (isa => 'Int');
+sub pprint {
+    my $self = shift;
+    '(nil)';
+}
+
+sub head { (shift) }
+sub tail { die "Cannot get the tail of an empty list" }
 
 sub is_equal {
     my ($left, $right) = @_;
-    $left->val == $right->val;
+    $right->isa(__PACKAGE__);
 }
 
 no Moose; 1;
@@ -21,11 +27,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Literal::Int - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::Literal::Nil - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::Literal::Int;
+  use Interpreter::Lambda::Calculus::AST::Literal::Nil;
 
 =head1 DESCRIPTION
 

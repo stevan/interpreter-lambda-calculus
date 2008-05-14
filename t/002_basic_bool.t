@@ -15,26 +15,26 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 
 # test some basic quality
-foreach my $source ('(== 10 10)', '(eq 10 10)', '(== "ten" "ten")', '(eq "ten" "ten")'){
+foreach my $source ('(10 == 10)', '("ten" == "ten")', '(true == true)', '(false == false)'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
-foreach my $source ('(== 10 5)', '(eq 10 5)', '(== "ten" "five")', '(eq "ten" "five")'){
+foreach my $source ('(10 == 5)', '("ten" == "five")', '(true == false)', '(false == true)'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');
 }
 
 # and some in-equality
-foreach my $source ('(!= 10 5)', '(ne 10 5)', '(!= "ten" "five")', '(ne "ten" "five")'){
+foreach my $source ('(10 != 5)', '("ten" != "five")', '(true != false)', '(false != true)'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
-foreach my $source ('(!= 10 10)', '(ne 10 10)', '(!= "ten" "ten")', '(ne "ten" "ten")'){
+foreach my $source ('(10 != 10)', '("ten" != "ten")', '(true != true)', '(false != false)'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');
@@ -43,52 +43,52 @@ foreach my $source ('(!= 10 10)', '(ne 10 10)', '(!= "ten" "ten")', '(ne "ten" "
 # and some others
 
 # greater than
-foreach my $source ('(> 10 10)', '(gt 10 10)', '(> "a" "a")', '(gt "a" "a")'){
+foreach my $source ('(10 > 10)', '("a" > "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');
 }
 
-foreach my $source ('(> 11 10)', '(gt 11 10)', '(> "b" "a")', '(gt "b" "a")'){
+foreach my $source ('(11 > 10)', '("b" > "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
 # greater than or equal
-foreach my $source ('(>= 10 10)', '(ge 10 10)', '(>= "a" "a")', '(ge "a" "a")'){
+foreach my $source ('(10 >= 10)', '("a" >= "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
-foreach my $source ('(>= 9 10)', '(ge 9 10)', '(>= "a" "b")', '(ge "a" "b")'){
+foreach my $source ('(9 >= 10)', '("a" >= "b")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');
 }
 
 # less than
-foreach my $source ('(< 10 10)', '(lt 10 10)', '(< "a" "a")', '(lt "a" "a")'){
+foreach my $source ('(10 < 10)', '("a" < "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');
 }
 
-foreach my $source ('(< 9 10)', '(lt 9 10)', '(< "a" "b")', '(lt "a" "b")'){
+foreach my $source ('(9 < 10)', '("a" < "b")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
 # less than or equal
-foreach my $source ('(<= 10 10)', '(le 10 10)', '(<= "a" "a")', '(le "a" "a")'){
+foreach my $source ('(10 <= 10)', '("a" <= "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'true', '... got the right value');
 }
 
-foreach my $source ('(<= 10 9)', '(le 10 9)', '(<= "b" "a")', '(le "b" "a")'){
+foreach my $source ('(10 <= 9)', '("b" <= "a")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Bool');
     is($r->val, 'false', '... got the right value');

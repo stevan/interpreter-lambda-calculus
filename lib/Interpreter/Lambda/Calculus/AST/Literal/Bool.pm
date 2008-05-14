@@ -22,6 +22,11 @@ sub is_bool_type {
     find_type_constraint('Interpreter::Lambda::Calculus::AST::Literal::Bool::Type')->check($value);
 }
 
+sub is_equal {
+    my ($left, $right) = @_;
+    $left->val eq $right->val;
+}
+
 no Moose; no Moose::Util::TypeConstraints; 1;
 
 __END__

@@ -14,11 +14,9 @@ sub eval {
     my ($self, %env) = @_;
     my ($left, $right) = $self->evaluate_left_and_right(\%env);    
     Interpreter::Lambda::Calculus::AST::Literal::Bool->new(
-        val => ((($left->isa('Interpreter::Lambda::Calculus::AST::Literal::Int')
-                    ? ($left->val == $right->val)
-                    : ($left->val eq $right->val)))
-                        ? Interpreter::Lambda::Calculus::AST::Literal::Bool->true 
-                        : Interpreter::Lambda::Calculus::AST::Literal::Bool->false)
+        val => ($left->is_equal($right)
+                    ? Interpreter::Lambda::Calculus::AST::Literal::Bool->true 
+                    : Interpreter::Lambda::Calculus::AST::Literal::Bool->false)
     );
 }
 

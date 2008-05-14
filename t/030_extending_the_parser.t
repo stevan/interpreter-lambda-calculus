@@ -29,7 +29,7 @@ push @{ $i->parser->compound_node_definitions } => [
     }
 ];
 
-my $func = $i->parse('(fun square x = (* x x))');
+my $func = $i->parse('(fun square x = (x * x))');
 isa_ok($func, 'Function');
 
 

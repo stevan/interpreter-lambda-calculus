@@ -17,7 +17,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 {    
     my $r = $i->interpret(q[
-        (define double x = (+ x x))
+        (define double x = (x + x))
         (double 10)
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
@@ -27,7 +27,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 {    
     my $r = $i->interpret(q[
         (define apply f = (lambda (x) (f x)))
-        (define double x = (+ x x))        
+        (define double x = (x + x))        
         ((apply double) 10)
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');

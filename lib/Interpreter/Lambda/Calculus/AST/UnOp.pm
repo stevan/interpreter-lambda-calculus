@@ -1,7 +1,7 @@
-package Interpreter::Lambda::Calculus::AST::BinOp;
+package Interpreter::Lambda::Calculus::AST::UnOp;
 use metaclass 'MooseX::MetaDescription::Meta::Class' => (
     description => {
-        traits => [ 'Interpreter::Lambda::Calculus::Description::BinOp' ]
+        traits => [ 'Interpreter::Lambda::Calculus::Description::UnOp' ]
     }
 );
 use Moose;
@@ -11,31 +11,25 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::Term';    
 
-has 'left'  => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');    
-has 'right' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');
+has 'arg' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');    
 
-sub evaluate_left_and_right {
+sub eval_arg {
     my ($self, $env) = @_;
     
     my $expr_type            = $self->meta->metadescription->expression_type;
     my $expr_type_constraint = $self->meta->metadescription->expression_type_constraint;
     
-    my $left  = $self->left->eval(%$env);
-    ($expr_type_constraint->check($left))
-        || confess "TYPE ERROR: Left hand side evaluated to ($left), expected ($expr_type)";
+    my $arg = $self->arg->eval(%$env);
+    ($expr_type_constraint->check($arg))
+        || confess "TYPE ERROR: Argument evaluated to ($arg), expected ($expr_type)";
         
-    my $right = $self->right->eval(%$env);    
-    ($expr_type_constraint->check($right))
-        || confess "TYPE ERROR: Right hand side evaluated to ($right), expected ($expr_type)";    
-        
-    return ($left, $right);
+    return $arg;    
 }
 
 sub pprint {
     my $self = shift;
-    '(' . $self->left->pprint . ' ' 
-        . $self->meta->metadescription->operator . ' ' 
-        . $self->right->pprint . ')'
+    '(' . $self->meta->metadescription->operator . ' ' 
+        . $self->arg->pprint . ')'
 }
 
 

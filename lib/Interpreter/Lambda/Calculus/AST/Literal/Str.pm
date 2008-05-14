@@ -8,6 +8,11 @@ extends 'Interpreter::Lambda::Calculus::AST::Literal';
 
 has '+val' => (isa => 'Str');
 
+sub is_equal {
+    my ($left, $right) = @_;
+    $left->val eq $right->val;
+}
+
 sub pprint {
     my $self = shift;
     '("' . $self->val . '")';

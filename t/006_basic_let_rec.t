@@ -18,10 +18,10 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 {
     my $r = $i->interpret(q[
         (let rec fact = (lambda (n) 
-            (if (== n 0) then 
+            (if (n == 0) then 
                 (1) 
              else 
-                (* n (fact (- n 1))))
+                (n * (fact (n - 1))))
         ) in 
             (fact 5)
         )    
@@ -35,10 +35,10 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 {
     my $r = $i->interpret(q[
         (let rec fib = (lambda (n) 
-            (if (< n 2) then 
+            (if (n < 2) then 
                 (n) 
              else 
-                (+ (fib (- n 1)) (fib (- n 2))))
+                ((fib (n - 1)) + (fib (n - 2))))
         ) in 
             (fib 10)
         )

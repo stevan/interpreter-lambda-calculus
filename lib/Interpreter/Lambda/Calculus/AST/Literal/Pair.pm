@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::Literal::Int;
+package Interpreter::Lambda::Calculus::AST::Literal::Pair;
 use Moose;
 
 our $VERSION   = '0.01';
@@ -6,11 +6,16 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::Literal';
 
-has '+val' => (isa => 'Int');
+has 'head' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');
+has 'tail' => (is => 'ro', isa => 'Interpreter::Lambda::Calculus::AST::Term');
+
+sub pprint {
+    my $self = shift;
+    '(' . $self->head->pprint . ' :: ' . $self->tail->pprint . ')';
+}
 
 sub is_equal {
-    my ($left, $right) = @_;
-    $left->val == $right->val;
+    die "Cannot compare quality in Pair";
 }
 
 no Moose; 1;
@@ -21,11 +26,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Literal::Int - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::Literal::Pair - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::Literal::Int;
+  use Interpreter::Lambda::Calculus::AST::Literal::Pair;
 
 =head1 DESCRIPTION
 

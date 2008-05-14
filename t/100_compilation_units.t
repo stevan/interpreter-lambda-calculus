@@ -19,7 +19,7 @@ my $i = Interpreter::Lambda::Calculus->new;
 isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 {
-    my $l = $i->parse('(lambda x (* x x))');
+    my $l = $i->parse('(lambda x (x * x))');
     my $r = Interpreter::Lambda::Calculus::AST::App->new(
         f   => $l,
         arg => Interpreter::Lambda::Calculus::AST::Literal::Int->new(val => 10)

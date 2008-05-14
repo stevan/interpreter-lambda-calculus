@@ -20,7 +20,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 }
 
 {
-    my $r = $i->interpret('(let x = (+ 1 1) in x)');
+    my $r = $i->interpret('(let x = (1 + 1) in x)');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 2, '... got the right value');
 }
@@ -28,7 +28,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 # with functions ...
 
 {
-    my $r = $i->interpret('(let double = (lambda (x) (+ x x)) in (double 10))');
+    my $r = $i->interpret('(let double = (lambda (x) (x + x)) in (double 10))');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 20, '... got the right value');
 }

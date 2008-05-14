@@ -9,31 +9,26 @@ our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
 our %BINOP_TABLE = (
-    # int binops
-    'add' => 'BinOp::Add',
-    'mul' => 'BinOp::Mul',
-    'sub' => 'BinOp::Sub',
-    'div' => 'BinOp::Div',
-    'mod' => 'BinOp::Mod',
-    # as operators
+    # int
     '+'   => 'BinOp::Add',
     '*'   => 'BinOp::Mul',
     '-'   => 'BinOp::Sub',
     '/'   => 'BinOp::Div',
-    # bool binops
-    'eq'  => 'BinOp::Eq',
-    'ne'  => 'BinOp::Ne',
-    'gt'  => 'BinOp::Gt',
-    'lt'  => 'BinOp::Lt',
-    'ge'  => 'BinOp::GtEq',
-    'le'  => 'BinOp::LtEq',
-    # as operators
+    'mod' => 'BinOp::Mod',    
+    # bool
     '=='  => 'BinOp::Eq',
     '!='  => 'BinOp::Ne',
     '>'   => 'BinOp::Gt',
     '<'   => 'BinOp::Lt',
     '>='  => 'BinOp::GtEq',
     '<='  => 'BinOp::LtEq',
+    # pair constructor
+    '::'  => 'BinOp::Cons',    
+);
+
+our %UNOP_TABLE = (
+    'head' => 'UnOp::Head',    
+    'tail' => 'UnOp::Tail',        
 );
 
 sub create_compound_node_spec_checker {
@@ -64,6 +59,20 @@ our @COMPOUND_NODE_DEFINITIONS = (
             $parser->create_ast($nodes->[0]);
         }
     ],
+    (map {
+        my $op = $_;
+        [
+            create_compound_node_spec_checker(
+                [ $op, undef ]
+            ),
+            sub {
+                my ($parser, $nodes) = @_;
+                return $parser->create_node($UNOP_TABLE{$op})->new(
+                    arg => $parser->create_ast($nodes->[1]),
+                );
+            }
+        ]        
+    } keys %UNOP_TABLE),
     [
         create_compound_node_spec_checker(
             [ undef, undef ]
@@ -161,12 +170,12 @@ our @COMPOUND_NODE_DEFINITIONS = (
         my $op = $_;
         [
             create_compound_node_spec_checker(
-                [ $op, undef, undef ]
+                [ undef, $op, undef ]
             ),
             sub {
                 my ($parser, $nodes) = @_;
                 return $parser->create_node($BINOP_TABLE{$op})->new(
-                    left  => $parser->create_ast($nodes->[1]),
+                    left  => $parser->create_ast($nodes->[0]),
                     right => $parser->create_ast($nodes->[2]),
                 );
             }
@@ -200,6 +209,11 @@ our @SINGULAR_NODE_DEFINITIONS = (
         sub { $_[1]->name eq 'unit'             },
         sub { $_[0]->create_node('Unit')->new() },
     ],
+    # Nil
+    [
+        sub { $_[1]->name eq 'nil'             },
+        sub { $_[0]->create_node('Literal::Nil')->new() },
+    ],    
     # Var
     [
         sub { 1 },

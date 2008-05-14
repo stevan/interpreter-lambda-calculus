@@ -16,7 +16,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 {
     my %source = (
         # App
-        '(+ 10 10)' => '(+ (10) (10))',
+        '(10 + 10)' => '((10) + (10))',
         # Var
         '(x)' => '(x)',
         # Unit        
@@ -38,7 +38,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
         # If Else
         '(if (true) then 10 else 20)' => '(if (true) then (10) else (20))',
         # Define
-        '(define foo x = (+ x x))' => '(define foo (x) = (+ (x) (x)))',
+        '(define foo x = (x + x))' => '(define foo (x) = ((x) + (x)))',
         # DefineConst
         '(define foo = 10)' => '(define foo = (10))',
     );
@@ -53,7 +53,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     }
     
     is(
-        $i->interpret('((lambda (f) (lambda (x) (f x))) (lambda (x) (+ x x)))')->pprint,
+        $i->interpret('((lambda (f) (lambda (x) (f x))) (lambda (x) (x + x)))')->pprint,
         '<closure $ENV (lambda (x) ((f) (x)))>',        
         "... closure pretty printed correctly"
     ); 

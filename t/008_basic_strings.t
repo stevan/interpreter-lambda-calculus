@@ -14,19 +14,19 @@ my $i = Interpreter::Lambda::Calculus->new;
 isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 # test some basic math stuff ...
-foreach my $source ('(+ "Hello" "World")', '(add "Hello" "World")'){
+foreach my $source ('("Hello" + "World")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Str');
     is($r->val, "HelloWorld", '... got the right value');
 }
 
-foreach my $source ('(+ "Hello" 10)', '(add "Hello" 10)'){
+foreach my $source ('("Hello" + 10)'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Str');
     is($r->val, "Hello10", '... got the right value');
 }
 
-foreach my $source ('(+ 10 "Hello")', '(add 10 "Hello")'){
+foreach my $source ('(10 + "Hello")'){
     my $r = $i->interpret($source);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Str');
     is($r->val, "10Hello", '... got the right value');
@@ -34,10 +34,8 @@ foreach my $source ('(+ 10 "Hello")', '(add 10 "Hello")'){
 
 {
     my @errors = (
-        '(+ "Hello" (lambda () ()))', 
-        '(add "Hello" (lambda () ()))',
-        '(+ (lambda () ()) "Hello")', 
-        '(add (lambda () ()) "Hello")',
+        '("Hello" + (lambda () ()))', 
+        '((lambda () ()) + "Hello")', 
     );
 
     foreach my $err (@errors) {

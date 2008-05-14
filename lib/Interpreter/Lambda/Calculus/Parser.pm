@@ -76,6 +76,7 @@ sub parse {
     # - SL
     $source =~ s/\n/ /g;       # remove newlines
     $source =~ s/\(\)/unit/g;  # and swap () for unit
+    $source =~ s/\[\]/nil/g;   # and swap [] for nil
 
     my ($root_node) = grep { $_ ne '' } $self->read_source("($source)");    
     #warn Dumper $root_node;    

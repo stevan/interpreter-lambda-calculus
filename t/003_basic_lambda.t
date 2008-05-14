@@ -28,7 +28,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 }
 
 {
-    my $l = $i->parse('(lambda x (+ x x))');
+    my $l = $i->parse('(lambda x (x + x))');
     isa_ok($l, 'Interpreter::Lambda::Calculus::AST::Lambda');
     is($l->param->name, 'x', '... our lambdas parameter is x');
 
@@ -41,7 +41,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 }
 
 {
-    my $adder = $i->parse('(lambda x (lambda y (+ x y)))');
+    my $adder = $i->parse('(lambda x (lambda y (x + y)))');
     isa_ok($adder, 'Interpreter::Lambda::Calculus::AST::Lambda');
     is($adder->param->name, 'x', '... our lambdas parameter is x');
     
@@ -65,7 +65,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     isa_ok($applier, 'Interpreter::Lambda::Calculus::AST::Lambda');
     is($applier->param->name, 'f', '... our lambdas parameter is f');
     
-    my $product = $i->parse('(lambda x (* x x))');
+    my $product = $i->parse('(lambda x (x * x))');
     isa_ok($product, 'Interpreter::Lambda::Calculus::AST::Lambda');
     is($product->param->name, 'x', '... our lambdas parameter is x');    
     
