@@ -27,8 +27,9 @@ our %BINOP_TABLE = (
 );
 
 our %UNOP_TABLE = (
-    'head' => 'UnOp::Head',    
-    'tail' => 'UnOp::Tail',        
+    'head'   => 'UnOp::Head',    
+    'tail'   => 'UnOp::Tail',        
+    'empty?' => 'UnOp::Empty',      
 );
 
 sub create_compound_node_spec_checker {

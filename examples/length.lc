@@ -1,0 +1,6 @@
+(define length l = 
+    (if (empty? l) then 
+        0 
+    else 
+        (1 + (length (tail l)))))
+(length (10 :: (10 :: (10 :: (10 :: (10 :: []))))))

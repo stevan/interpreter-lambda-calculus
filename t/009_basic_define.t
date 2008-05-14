@@ -34,6 +34,19 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     is($r->val, 20, '... got the right value');
 }
 
+{    
+    my $r = $i->interpret(q[
+        (define length l = 
+            (if (empty? l) then 
+                0 
+            else 
+                (1 + (length (tail l)))))
+        (length (10 :: (10 :: (10 :: (10 :: (10 :: []))))))
+    ]);
+    isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
+    is($r->val, 5, '... got the right value');
+}
+
 # global values
 
 {    
