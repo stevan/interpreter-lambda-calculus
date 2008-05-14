@@ -8,6 +8,8 @@ use Interpreter::Lambda::Calculus::AST::Unit;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
+## AST types ...
+
 enum 'Interpreter::Lambda::Calculus::AST::Literal::Bool::Type' 
     => qw(true false);
 
@@ -24,6 +26,20 @@ MooseX::Storage::Engine->add_custom_type_handler(
         %{ MooseX::Storage::Engine->find_type_handler(find_type_constraint('Object')) }
     )
 );
+
+## ParserTypes
+
+subtype 'Interpreter::Lambda::Calculus::Parser::BinOpTable'
+    # we can eventually make this 
+    # more complex, as we need to
+    => as 'HashRef[Str]';
+
+subtype 'Interpreter::Lambda::Calculus::Parser::NodeDefinition'
+    => as 'ArrayRef[CodeRef]'
+    => where { @{$_} == 2 };
+
+subtype 'Interpreter::Lambda::Calculus::Parser::NodeDefinitions'
+    => as 'ArrayRef[Interpreter::Lambda::Calculus::Parser::NodeDefinition]';
 
 no Moose::Util::TypeConstraints; 1;
 
