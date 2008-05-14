@@ -5,8 +5,6 @@ use Moose::Util::TypeConstraints ();
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-#extends 'MooseX::MetaDescription::Description';
-
 has 'operator' => (
     is      => 'ro',
     isa     => 'Str',   

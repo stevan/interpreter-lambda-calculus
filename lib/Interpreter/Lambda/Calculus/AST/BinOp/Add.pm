@@ -16,8 +16,8 @@ __PACKAGE__->meta->description->{expression_type} =
 sub eval {
     my ($self, %env) = @_;
     my ($left, $right) = $self->evaluate_left_and_right(\%env);
-    if ($left->isa('Interpreter::Lambda::Calculus::AST::Literal::Int')  && 
-        $right->isa('Interpreter::Lambda::Calculus::AST::Literal::Int') ){
+    if ($left->isa('Interpreter::Lambda::Calculus::AST::Literal::Int') && 
+        $right->isa('Interpreter::Lambda::Calculus::AST::Literal::Int')){
         Interpreter::Lambda::Calculus::AST::Literal::Int->new(
             val => ($left->val + $right->val)
         );

@@ -20,6 +20,18 @@ foreach my $source ('(+ "Hello" "World")', '(add "Hello" "World")'){
     is($r->val, "HelloWorld", '... got the right value');
 }
 
+foreach my $source ('(+ "Hello" 10)', '(add "Hello" 10)'){
+    my $r = $i->interpret($source);
+    isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Str');
+    is($r->val, "Hello10", '... got the right value');
+}
+
+foreach my $source ('(+ 10 "Hello")', '(add 10 "Hello")'){
+    my $r = $i->interpret($source);
+    isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Str');
+    is($r->val, "10Hello", '... got the right value');
+}
+
 {
     my @errors = (
         '(+ "Hello" (lambda () ()))', 
