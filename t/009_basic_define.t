@@ -38,8 +38,8 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 {    
     my $r = $i->interpret(q[
-        (define ten () = 10)
-        (ten ())
+        (define ten = 10)
+        (ten)
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 10, '... got the right value');
