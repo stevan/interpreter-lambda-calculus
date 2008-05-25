@@ -41,7 +41,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
                 0 
             else 
                 (1 + (length (tail l)))))
-        (length (10 :: (10 :: (10 :: (10 :: (10 :: []))))))
+        (length (10 : (10 : (10 : (10 : (10 : []))))))
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->val, 5, '... got the right value');

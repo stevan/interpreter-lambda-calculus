@@ -41,6 +41,8 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
         '(define foo x = (x + x))' => '(define foo (x) = ((x) + (x)))',
         # DefineConst
         '(define foo = 10)' => '(define foo = (10))',
+        # COns
+        '(1 : (2 : (3 : [])))' => '((1) : ((2) : ((3) : (nil))))',
     );
 
     foreach my $s (keys %source) {

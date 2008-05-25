@@ -23,7 +23,7 @@ our %BINOP_TABLE = (
     '>='  => 'BinOp::GtEq',
     '<='  => 'BinOp::LtEq',
     # pair constructor
-    '::'  => 'BinOp::Cons',    
+    ':'   => 'BinOp::Cons',    
 );
 
 our %UNOP_TABLE = (

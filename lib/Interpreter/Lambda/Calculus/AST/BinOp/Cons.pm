@@ -8,7 +8,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::BinOp';
 
-__PACKAGE__->meta->description->{operator}        = '::';
+__PACKAGE__->meta->description->{operator}        = ':';
 __PACKAGE__->meta->description->{expression_type} = 'Interpreter::Lambda::Calculus::AST::Term';
 
 sub eval {

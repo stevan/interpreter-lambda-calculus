@@ -19,7 +19,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 }
 
 {
-    my $r = $i->interpret('(10 :: [])');
+    my $r = $i->interpret('(10 : [])');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Pair');
     isa_ok($r->head, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->head->val, 10, '... got the right value in our list');
@@ -27,7 +27,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 }
 
 {
-    my $r = $i->interpret('(10 :: (20 :: []))');
+    my $r = $i->interpret('(10 : (20 : []))');
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Pair');
     isa_ok($r->head, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
     is($r->head->val, 10, '... got the right value in our list');
