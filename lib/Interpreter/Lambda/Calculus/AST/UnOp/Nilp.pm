@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::UnOp::Head;
+package Interpreter::Lambda::Calculus::AST::UnOp::Nilp;
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Pair;
@@ -8,13 +8,17 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::UnOp';
 
-__PACKAGE__->meta->description->{operator}        = 'head';
+__PACKAGE__->meta->description->{operator}        = 'nil?';
 __PACKAGE__->meta->description->{expression_type} = 
     'Interpreter::Lambda::Calculus::AST::Literal::Nil | Interpreter::Lambda::Calculus::AST::Literal::Pair';
 
 sub eval {
     my ($self, %env) = @_;
-    $self->eval_arg(\%env)->head;
+    Interpreter::Lambda::Calculus::AST::Literal::Bool->new(
+        val => ($self->eval_arg(\%env)->isa('Interpreter::Lambda::Calculus::AST::Literal::Nil')
+                    ? Interpreter::Lambda::Calculus::AST::Literal::Bool->true 
+                    : Interpreter::Lambda::Calculus::AST::Literal::Bool->false)
+    );    
 }
 
 no Moose; 1;
@@ -25,11 +29,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::UnOp::Head - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::UnOp::Empty - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::UnOp::Head;
+  use Interpreter::Lambda::Calculus::AST::UnOp::Empty;
 
 =head1 DESCRIPTION
 

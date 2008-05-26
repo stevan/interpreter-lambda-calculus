@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::BinOp::Cons;
+package Interpreter::Lambda::Calculus::AST::UnOp::First;
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Pair;
@@ -6,18 +6,15 @@ use Interpreter::Lambda::Calculus::AST::Literal::Pair;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'Interpreter::Lambda::Calculus::AST::BinOp';
+extends 'Interpreter::Lambda::Calculus::AST::UnOp';
 
-__PACKAGE__->meta->description->{operator}        = ':';
-__PACKAGE__->meta->description->{expression_type} = 'Interpreter::Lambda::Calculus::AST::Term';
+__PACKAGE__->meta->description->{operator}        = 'first';
+__PACKAGE__->meta->description->{expression_type} = 
+    'Interpreter::Lambda::Calculus::AST::Literal::Nil | Interpreter::Lambda::Calculus::AST::Literal::Pair';
 
 sub eval {
     my ($self, %env) = @_;
-    my ($left, $right) = $self->evaluate_left_and_right(\%env);
-    Interpreter::Lambda::Calculus::AST::Literal::Pair->new(
-        head => $left,
-        tail => $right,
-    );
+    $self->eval_arg(\%env)->head;
 }
 
 no Moose; 1;
@@ -28,11 +25,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::BinOp::Cons - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::UnOp::First - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::BinOp::Cons;
+  use Interpreter::Lambda::Calculus::AST::UnOp::First;
 
 =head1 DESCRIPTION
 

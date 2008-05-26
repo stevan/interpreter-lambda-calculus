@@ -40,7 +40,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
         # Define
         '(define foo x = (x + x))' => '(define foo (x) = ((x) + (x)))',
         # DefineConst
-        '(define foo = 10)' => '(define foo = (10))',
+        '(const foo = 10)' => '(const foo = (10))',
         # COns
         '(1 : (2 : (3 : [])))' => '((1) : ((2) : ((3) : (nil))))',
     );
@@ -61,8 +61,8 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
     ); 
     
     is(
-        $i->parse('(define foo = "bar") (foo)')->pprint,
-        ('(define foo = ("bar"))' . "\n" . '(foo)'),        
+        $i->parse('(const foo = "bar") (foo)')->pprint,
+        ('(const foo = ("bar"))' . "\n" . '(foo)'),        
         "... sequence pretty printed correctly"
     );               
 }

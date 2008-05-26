@@ -13,7 +13,7 @@ sub eval {
 
 sub pprint {
     my $self = shift;
-    '(define ' . $self->var . ' = ' . $self->lambda->body->pprint . ')'
+    '(const ' . $self->var . ' = ' . $self->lambda->body->pprint . ')'
 }
 
 no Moose; 1;
@@ -24,11 +24,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Define - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::DefineConst - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::Let;
+  use Interpreter::Lambda::Calculus::AST::DefineConst;
 
 =head1 DESCRIPTION
 

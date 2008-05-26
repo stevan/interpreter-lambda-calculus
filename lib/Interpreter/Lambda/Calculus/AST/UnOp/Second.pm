@@ -1,4 +1,4 @@
-package Interpreter::Lambda::Calculus::AST::UnOp::Tail;
+package Interpreter::Lambda::Calculus::AST::UnOp::Second;
 use Moose;
 
 use Interpreter::Lambda::Calculus::AST::Literal::Pair;
@@ -8,7 +8,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 extends 'Interpreter::Lambda::Calculus::AST::UnOp';
 
-__PACKAGE__->meta->description->{operator}        = 'tail';
+__PACKAGE__->meta->description->{operator}        = 'second';
 __PACKAGE__->meta->description->{expression_type} = 
     'Interpreter::Lambda::Calculus::AST::Literal::Nil | Interpreter::Lambda::Calculus::AST::Literal::Pair';
 
@@ -25,11 +25,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::UnOp::Tail - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::UnOp::Second - A Moosey solution to this problem
 
 =head1 SYNOPSIS
 
-  use Interpreter::Lambda::Calculus::AST::UnOp::Tail;
+  use Interpreter::Lambda::Calculus::AST::UnOp::Second;
 
 =head1 DESCRIPTION
 

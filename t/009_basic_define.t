@@ -37,10 +37,10 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 {    
     my $r = $i->interpret(q[
         (define length l = 
-            (if (empty? l) then 
+            (if (nil? l) then 
                 0 
             else 
-                (1 + (length (tail l)))))
+                (1 + (length (second l)))))
         (length (10 : (10 : (10 : (10 : (10 : []))))))
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');
@@ -51,7 +51,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
 {    
     my $r = $i->interpret(q[
-        (define ten = 10)
+        (const ten = 10)
         (ten)
     ]);
     isa_ok($r, 'Interpreter::Lambda::Calculus::AST::Literal::Int');

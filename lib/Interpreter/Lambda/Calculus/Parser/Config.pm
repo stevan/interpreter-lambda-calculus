@@ -23,13 +23,13 @@ our %BINOP_TABLE = (
     '>='  => 'BinOp::GtEq',
     '<='  => 'BinOp::LtEq',
     # pair constructor
-    ':'   => 'BinOp::Cons',    
+    ':'   => 'BinOp::PairConstructor',    
 );
 
 our %UNOP_TABLE = (
-    'head'   => 'UnOp::Head',    
-    'tail'   => 'UnOp::Tail',        
-    'empty?' => 'UnOp::Empty',      
+    'first'  => 'UnOp::First',    
+    'second' => 'UnOp::Second',        
+    'nil?'   => 'UnOp::Nilp',      
 );
 
 sub create_compound_node_spec_checker {
@@ -129,7 +129,7 @@ our @COMPOUND_NODE_DEFINITIONS = (
     ],    
     [
         create_compound_node_spec_checker(
-            [ 'define', undef, '=', undef ]
+            [ 'const', undef, '=', undef ]
         ),
         sub {
             my ($parser, $nodes) = @_;
@@ -167,6 +167,36 @@ our @COMPOUND_NODE_DEFINITIONS = (
             );
         }
     ],
+    [
+        create_compound_node_spec_checker(
+            [ 'type', undef, '=', undef ]
+        ),
+        sub {
+            my ($parser, $nodes) = @_;
+            
+            my $constructor = $parser->create_node('Literal::DataType::Constructor');
+            
+            my @type_set;
+            foreach my $def (@{$nodes->[3]}) {
+                if (ref $def eq 'ARRAY') {
+                    push @type_set => $constructor->new(
+                        name       => $def->[0]->name,
+                        value_list => [ map { $_->name } @{ $def->[1] } ],                        
+                    )
+                }
+                else {
+                    push @type_set => $constructor->new(
+                        name => $def->name,
+                    )
+                }
+            }
+            
+            return $parser->create_node('Literal::DataType')->new(
+                name     => $nodes->[1]->name,
+                type_set => \@type_set
+            );
+        }
+    ],    
     map {
         my $op = $_;
         [
