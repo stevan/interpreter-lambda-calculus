@@ -5,13 +5,9 @@ use Moose::Util::TypeConstraints;
 our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:STEVAN';
 
-subtype 'Interpreter::Lambda::Calculus::AST::Literal::DataType::Constructor::Name'
-    => as 'Str'
-    => where { /[A-Z][a-zA-Z]+/ };
-
 has 'name' => (
     is       => 'ro',
-    isa      => 'Interpreter::Lambda::Calculus::AST::Literal::DataType::Constructor::Name',  
+    isa      => subtype('Str' => where { /[A-Z][a-zA-Z]+/ }),  
     required => 1,     
 );
 
