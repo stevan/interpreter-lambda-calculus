@@ -62,7 +62,7 @@ isa_ok($i, 'Interpreter::Lambda::Calculus');
 
     is_deeply($d->type_map, { 'Nil' => $nil, 'Cons' => $cons }, '... got the right type map');
 
-    is($d->pprint, '(type list = (Nil) | (Cons(head tail)))', '... got the right pretty print');
+    is($d->pprint, '(type list = (Nil) | (Cons (head tail)))', '... got the right pretty print');
 }
 
 

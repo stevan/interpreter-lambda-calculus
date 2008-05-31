@@ -33,7 +33,7 @@ sub pprint {
         return '(' . $self->name . ')';
     }
     else {
-        return '(' . $self->name . '(' . (join " " => @{ $self->value_list }) . '))';        
+        return '(' . $self->name . ' (' . (join " " => @{ $self->value_list }) . '))';        
     }
 }
 

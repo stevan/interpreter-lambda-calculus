@@ -80,6 +80,24 @@ our @COMPOUND_NODE_DEFINITIONS = (
         ),
         sub {
             my ($parser, $nodes) = @_;
+
+            #use Data::Dumper;
+            #warn Dumper $nodes;
+
+            if (blessed $nodes->[0]) {
+                if (my $type_spec = $parser->type_map->{ $nodes->[0]->name }) {
+                    my $args = [ 
+                        map { 
+                            $parser->create_ast($_) 
+                        } (ref $nodes->[1] eq 'ARRAY' ? @{ $nodes->[1] } : $nodes->[1])
+                    ];
+                    return $parser->create_node('ConstructorApp')->new(
+                        constructor => $type_spec->{constructor},
+                        args        => $args,
+                    );                
+                }
+            }
+
             return $parser->create_node('App')->new(
                 f   => $parser->create_ast($nodes->[0]),
                 arg => $parser->create_ast($nodes->[1]),
@@ -191,10 +209,14 @@ our @COMPOUND_NODE_DEFINITIONS = (
                 }
             }
             
-            return $parser->create_node('Literal::DataType')->new(
+            my $type = $parser->create_node('Literal::DataType')->new(
                 name     => $nodes->[1]->name,
                 type_set => \@type_set
             );
+            
+            $parser->register_type($type);
+            
+            return $type;
         }
     ],    
     map {
@@ -215,6 +237,20 @@ our @COMPOUND_NODE_DEFINITIONS = (
 );
 
 our @SINGULAR_NODE_DEFINITIONS = (
+    # Nulary Constructors
+    [
+        sub {
+            my ($parser, $node) = @_;            
+            (blessed $node && $parser->type_map->{ $node->name })
+        },
+        sub {
+            my ($parser, $node) = @_;
+            my $type_spec = $parser->type_map->{ $node->name };
+            return $parser->create_node('ConstructorApp')->new(
+                constructor => $type_spec->{constructor},
+            );                     
+        }
+    ],
     # Literal::Int
     [
         sub { not( blessed $_[1] ) && looks_like_number($_[1])      },

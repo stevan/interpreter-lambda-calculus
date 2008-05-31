@@ -66,6 +66,12 @@ has 'ast_factory' => (
 
 has 'ast' => (is => 'rw', isa => 'Interpreter::Lambda::Calculus::AST::Term');
 
+has 'type_map' => (
+    is      => 'ro',
+    isa     => 'HashRef',   
+    default => sub { +{} },
+);
+
 sub parse {
     my ($self, $source) = @_;
 
@@ -116,6 +122,17 @@ sub create_ast {
     }
 
     confess "UNIMPLEMENTED node " . Dumper $node;
+}
+
+sub register_type {
+    my ($self, $type) = @_;
+    foreach my $const (@{$type->type_set}) {
+        $self->type_map->{$const->name} = {
+            name        => $const->name,
+            constructor => $const,
+            type        => $type,
+        };
+    }    
 }
 
 no Moose; 1;

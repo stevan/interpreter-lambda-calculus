@@ -8,4 +8,4 @@
     (Nil       -> 0)
     (Cons(h t) -> (1 + (length t)))))
 
-(length (Cons(1 Cons(2 Cons(3 Nil)))))
+(length (Cons(1 (Cons(2 (Cons(3 Nil)))))))

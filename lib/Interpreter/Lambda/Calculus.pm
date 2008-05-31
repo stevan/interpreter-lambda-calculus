@@ -25,7 +25,7 @@ has 'top_level_environment' => (
 sub interpret {
     my ($self, $source) = @_;
     $self->parse($source)->eval(
-        '__TOP_LEVEL_ENV__' => $self->top_level_environment
+        '__TOP_LEVEL_ENV__' => $self->top_level_environment,
     );
 }
 
