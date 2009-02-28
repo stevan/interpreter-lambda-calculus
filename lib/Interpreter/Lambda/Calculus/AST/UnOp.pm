@@ -32,6 +32,7 @@ sub pprint {
         . $self->arg->pprint . ')'
 }
 
+__PACKAGE__->meta->make_immutable;
 
 no Moose; no Moose::Util::TypeConstraints; 1;
 
@@ -69,7 +70,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 Infinity Interactive, Inc.
+Copyright 2008-2009 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 
