@@ -15,8 +15,8 @@ has 'binop_table' => (
     is      => 'ro',
     isa     => 'Interpreter::Lambda::Calculus::Parser::BinOpTable',
     lazy    => 1,
-    default => sub { 
-        \%Interpreter::Lambda::Calculus::Parser::Config::BINOP_TABLE 
+    default => sub {
+        \%Interpreter::Lambda::Calculus::Parser::Config::BINOP_TABLE
     },
 );
 
@@ -25,7 +25,7 @@ has 'compound_node_definitions' => (
     isa     => 'Interpreter::Lambda::Calculus::Parser::NodeDefinitions',
     lazy    => 1,
     default => sub {
-        \@Interpreter::Lambda::Calculus::Parser::Config::COMPOUND_NODE_DEFINITIONS 
+        \@Interpreter::Lambda::Calculus::Parser::Config::COMPOUND_NODE_DEFINITIONS
     },
 );
 
@@ -66,12 +66,6 @@ has 'ast_factory' => (
 
 has 'ast' => (is => 'rw', isa => 'Interpreter::Lambda::Calculus::AST::Term');
 
-has 'type_map' => (
-    is      => 'ro',
-    isa     => 'HashRef',   
-    default => sub { +{} },
-);
-
 sub parse {
     my ($self, $source) = @_;
 
@@ -84,9 +78,9 @@ sub parse {
     $source =~ s/\(\)/unit/g;  # and swap () for unit
     $source =~ s/\[\]/nil/g;   # and swap [] for nil
 
-    my ($root_node) = grep { $_ ne '' } $self->read_source("($source)");    
-    #warn Dumper $root_node;    
-    
+    my ($root_node) = grep { $_ ne '' } $self->read_source("($source)");
+    #warn Dumper $root_node;
+
     if (scalar @$root_node == 1) {
         $self->ast(
             $self->create_ast(
@@ -94,7 +88,7 @@ sub parse {
             )
         );
     }
-    else {        
+    else {
         $self->ast(
             $self->create_node('Seq')->new(
                 nodes => [
@@ -103,9 +97,9 @@ sub parse {
             )
         );
     }
-    
+
     #print $self->ast->dump;
-    
+
     $self->ast;
 }
 
@@ -122,17 +116,6 @@ sub create_ast {
     }
 
     confess "UNIMPLEMENTED node " . Dumper $node;
-}
-
-sub register_type {
-    my ($self, $type) = @_;
-    foreach my $const (@{$type->type_set}) {
-        $self->type_map->{$const->name} = {
-            name        => $const->name,
-            constructor => $const,
-            type        => $type,
-        };
-    }    
 }
 
 __PACKAGE__->meta->make_immutable;

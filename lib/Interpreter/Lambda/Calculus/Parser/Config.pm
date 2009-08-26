@@ -14,7 +14,7 @@ our %BINOP_TABLE = (
     '*'   => 'BinOp::Mul',
     '-'   => 'BinOp::Sub',
     '/'   => 'BinOp::Div',
-    'mod' => 'BinOp::Mod',    
+    'mod' => 'BinOp::Mod',
     # bool
     '=='  => 'BinOp::Eq',
     '!='  => 'BinOp::Ne',
@@ -23,13 +23,13 @@ our %BINOP_TABLE = (
     '>='  => 'BinOp::GtEq',
     '<='  => 'BinOp::LtEq',
     # pair constructor
-    ':'   => 'BinOp::PairConstructor',    
+    ':'   => 'BinOp::PairConstructor',
 );
 
 our %UNOP_TABLE = (
-    'first'  => 'UnOp::First',    
-    'second' => 'UnOp::Second',        
-    'nil?'   => 'UnOp::Nilp',      
+    'first'  => 'UnOp::First',
+    'second' => 'UnOp::Second',
+    'nil?'   => 'UnOp::Nilp',
 );
 
 sub create_compound_node_spec_checker {
@@ -72,7 +72,7 @@ our @COMPOUND_NODE_DEFINITIONS = (
                     arg => $parser->create_ast($nodes->[1]),
                 );
             }
-        ]        
+        ]
     } keys %UNOP_TABLE),
     [
         create_compound_node_spec_checker(
@@ -80,24 +80,6 @@ our @COMPOUND_NODE_DEFINITIONS = (
         ),
         sub {
             my ($parser, $nodes) = @_;
-
-            #use Data::Dumper;
-            #warn Dumper $nodes;
-
-            if (blessed $nodes->[0]) {
-                if (my $type_spec = $parser->type_map->{ $nodes->[0]->name }) {
-                    my $args = [ 
-                        map { 
-                            $parser->create_ast($_) 
-                        } (ref $nodes->[1] eq 'ARRAY' ? @{ $nodes->[1] } : $nodes->[1])
-                    ];
-                    return $parser->create_node('ConstructorApp')->new(
-                        constructor => $type_spec->{constructor},
-                        args        => $args,
-                    );                
-                }
-            }
-
             return $parser->create_node('App')->new(
                 f   => $parser->create_ast($nodes->[0]),
                 arg => $parser->create_ast($nodes->[1]),
@@ -144,7 +126,7 @@ our @COMPOUND_NODE_DEFINITIONS = (
                 )
             );
         }
-    ],    
+    ],
     [
         create_compound_node_spec_checker(
             [ 'const', undef, '=', undef ]
@@ -159,7 +141,7 @@ our @COMPOUND_NODE_DEFINITIONS = (
                 )
             );
         }
-    ],    
+    ],
     [
         create_compound_node_spec_checker(
             [ 'let', 'rec', undef, '=', undef, 'in', undef ]
@@ -185,40 +167,6 @@ our @COMPOUND_NODE_DEFINITIONS = (
             );
         }
     ],
-    [
-        create_compound_node_spec_checker(
-            [ 'type', undef, '=', undef ]
-        ),
-        sub {
-            my ($parser, $nodes) = @_;
-            
-            my $constructor = $parser->create_node('Literal::DataType::Constructor');
-            
-            my @type_set;
-            foreach my $def (@{$nodes->[3]}) {
-                if (ref $def eq 'ARRAY') {
-                    push @type_set => $constructor->new(
-                        name       => $def->[0]->name,
-                        value_list => [ map { $_->name } @{ $def->[1] } ],                        
-                    )
-                }
-                else {
-                    push @type_set => $constructor->new(
-                        name => $def->name,
-                    )
-                }
-            }
-            
-            my $type = $parser->create_node('Literal::DataType')->new(
-                name     => $nodes->[1]->name,
-                type_set => \@type_set
-            );
-            
-            $parser->register_type($type);
-            
-            return $type;
-        }
-    ],    
     map {
         my $op = $_;
         [
@@ -233,24 +181,10 @@ our @COMPOUND_NODE_DEFINITIONS = (
                 );
             }
         ]
-    } keys %BINOP_TABLE,    
+    } keys %BINOP_TABLE,
 );
 
 our @SINGULAR_NODE_DEFINITIONS = (
-    # Nulary Constructors
-    [
-        sub {
-            my ($parser, $node) = @_;            
-            (blessed $node && $parser->type_map->{ $node->name })
-        },
-        sub {
-            my ($parser, $node) = @_;
-            my $type_spec = $parser->type_map->{ $node->name };
-            return $parser->create_node('ConstructorApp')->new(
-                constructor => $type_spec->{constructor},
-            );                     
-        }
-    ],
     # Literal::Int
     [
         sub { not( blessed $_[1] ) && looks_like_number($_[1])      },
@@ -280,12 +214,12 @@ our @SINGULAR_NODE_DEFINITIONS = (
     [
         sub { $_[1]->name eq 'nil'             },
         sub { $_[0]->create_node('Literal::Nil')->new() },
-    ],    
+    ],
     # Var
     [
         sub { 1 },
         sub { $_[0]->create_node('Var')->new(name => $_[1]->name) },
-    ],    
+    ],
 );
 
 no Moose; 1;
@@ -304,7 +238,7 @@ Interpreter::Lambda::Calculus::Parser::Config - A Moosey solution to this proble
 
 =head1 DESCRIPTION
 
-=head1 METHODS 
+=head1 METHODS
 
 =over 4
 
@@ -314,7 +248,7 @@ Interpreter::Lambda::Calculus::Parser::Config - A Moosey solution to this proble
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 
