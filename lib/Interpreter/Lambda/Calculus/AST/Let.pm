@@ -31,21 +31,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::Let - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::Let - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus::AST::Let;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

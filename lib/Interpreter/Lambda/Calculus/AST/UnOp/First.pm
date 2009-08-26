@@ -27,7 +27,7 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::UnOp::First - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::UnOp::First - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 

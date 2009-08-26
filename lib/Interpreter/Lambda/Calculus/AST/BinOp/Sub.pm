@@ -29,21 +29,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::BinOp::Sub - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::BinOp::Sub - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus::AST::BinOp::Sub;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

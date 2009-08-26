@@ -230,7 +230,7 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::Parser::Config - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::Parser::Config - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 

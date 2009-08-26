@@ -11,10 +11,10 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 has 'interpreter' => (
     is      => 'ro',
-    isa     => 'Interpreter::Lambda::Calculus',   
+    isa     => 'Interpreter::Lambda::Calculus',
     lazy    => 1,
-    default => sub { 
-        Interpreter::Lambda::Calculus->new 
+    default => sub {
+        Interpreter::Lambda::Calculus->new
     },
 );
 
@@ -30,14 +30,14 @@ has 'term' => (
 
 has 'prompt' => (
     is      => 'ro',
-    isa     => 'Str',   
+    isa     => 'Str',
     default => sub { '>> ' },
 );
 
 has 'banner' => (
     is      => 'ro',
-    isa     => 'Str',   
-    default => sub {  
+    isa     => 'Str',
+    default => sub {
         return join "\n"=> (
             "Interpreter::Lambda::Calculus | Version: $Interpreter::Lambda::Calculus::VERSION",
             "Written by: Stevan Little <stevan.little\@iinteractive.com>",
@@ -48,7 +48,7 @@ has 'banner' => (
 
 sub run {
     my $self = shift;
-    print $self->banner;        
+    print $self->banner;
     while (1) {
         my $line = $self->readline($self->prompt);
         eval { print $self->interpreter->interpret($line)->pprint, "\n" };
@@ -68,25 +68,15 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::REPL - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::REPL - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus::REPL;
 
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
-
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

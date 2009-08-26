@@ -31,7 +31,7 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::UnOp::Empty - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::UnOp::Empty - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 

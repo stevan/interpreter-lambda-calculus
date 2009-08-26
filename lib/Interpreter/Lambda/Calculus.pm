@@ -8,9 +8,9 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 has 'parser' => (
     is      => 'ro',
-    isa     => 'Interpreter::Lambda::Calculus::Parser',   
+    isa     => 'Interpreter::Lambda::Calculus::Parser',
     lazy    => 1,
-    default => sub { 
+    default => sub {
         Interpreter::Lambda::Calculus::Parser->new;
     },
     handles => ['parse'],
@@ -18,7 +18,7 @@ has 'parser' => (
 
 has 'top_level_environment' => (
     is      => 'ro',
-    isa     => 'HashRef',   
+    isa     => 'HashRef',
     default => sub { +{} },
 );
 
@@ -39,25 +39,51 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus - A Moosey solution to this problem
+Interpreter::Lambda::Calculus - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus;
 
+  # define and apply functions ...
+  my $i = Interpreter::Lambda::Calculus->new;
+  my $r = $i->interpret(q[
+      (define double x = (x + x))
+      (double 10)
+  ]);
+  print $r->val; # 20
+
+  # first class functions ...
+  my $r = $i->interpret(q[
+      (define apply f = (lambda (x) (f x)))
+      (define double x = (x + x))
+      ((apply double) 10)
+  ]);
+  print $r->val; # 20
+
+  # recursive functions and pair constructors ...
+  my $r = $i->interpret(q[
+      (define length l =
+          (if (nil? l) then
+              0
+          else
+              (1 + (length (second l)))))
+      (length (10 : (10 : (10 : (10 : (10 : []))))))
+  ]);
+  print $r->val; # 5
+
 =head1 DESCRIPTION
 
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
+This is something I wrote just for fun, it is an interpreter for
+a simple Scheme-like language based on lambda calculus. It was
+written partially just because I wanted to write an interpreter,
+but also as an exercise in writing one using Moose. It is still
+in the very early stages and might never be anything more then
+just a toy.
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no 
+All complex software has bugs lurking in it, and this module is no
 exception. If you find a bug please either email me, or add the bug
 to cpan-RT.
 

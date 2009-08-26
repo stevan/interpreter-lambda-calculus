@@ -26,21 +26,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::AST::DefineConst - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::AST::DefineConst - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus::AST::DefineConst;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

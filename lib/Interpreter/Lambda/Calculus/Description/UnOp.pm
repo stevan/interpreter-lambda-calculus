@@ -39,21 +39,11 @@ __END__
 
 =head1 NAME
 
-Interpreter::Lambda::Calculus::Description::UnOp - A Moosey solution to this problem
+Interpreter::Lambda::Calculus::Description::UnOp - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use Interpreter::Lambda::Calculus::Description::UnOp;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 

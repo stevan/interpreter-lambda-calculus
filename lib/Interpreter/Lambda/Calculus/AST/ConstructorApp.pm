@@ -52,21 +52,11 @@ __END__
 
 =head1 NAME
 
-ClassName - A Moosey solution to this problem
+ClassName - Lambda Calculus Interpreter in Perl
 
 =head1 SYNOPSIS
 
   use ClassName;
-
-=head1 DESCRIPTION
-
-=head1 METHODS 
-
-=over 4
-
-=item B<>
-
-=back
 
 =head1 BUGS
 
